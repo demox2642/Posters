@@ -34,4 +34,6 @@ data class PlaceDB(
     val timetable: String?,
     @ColumnInfo(name = PlaceContrscts.Colums.TITLE)
     val title: String,
+    @ColumnInfo(name = PlaceContrscts.Colums.CITY)
+    val city: String
 )

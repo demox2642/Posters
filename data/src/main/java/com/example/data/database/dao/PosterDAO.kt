@@ -19,5 +19,5 @@ interface PosterDAO {
     fun deletePoster()
 
     @Query("SELECT * FROM ${PosterContrscts.TABLE_NAME} WHERE ${PosterContrscts.Colums.ID} =:posterID")
-    fun getPoster(posterID: Long): List<PosterDB>
+    fun getPoster(posterID: Long): PosterDB
 }

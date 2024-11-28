@@ -28,7 +28,7 @@ data class PosterDB(
     @ColumnInfo(name = PosterContrscts.Colums.ID)
     val id: Long,
     @ColumnInfo(name = PosterContrscts.Colums.IMAGE)
-    val images: String,
+    val images: String?,
     @ColumnInfo(name = PosterContrscts.Colums.PLACE_ID)
     val placeId: Long,
     @ColumnInfo(name = PosterContrscts.Colums.SLUG)

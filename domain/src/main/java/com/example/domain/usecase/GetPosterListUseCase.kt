@@ -39,12 +39,14 @@ class GetPosterListUseCase(
                                     errorText = it,
                                 )
                         }
+                    internetResponse.collect{
+                        response =
+                            PresentationModel<PagingData<PosterPresentation>>(
+                                screenState = ScreenState.RESULT,
+                                data = it,
+                            )
+                    }
 
-                    response =
-                        PresentationModel<PagingData<PosterPresentation>>(
-                            screenState = ScreenState.RESULT,
-                            data = internetResponse,
-                        )
                 } else {
                 val localResponse =
                     localRepository.getPosterList(

@@ -16,5 +16,6 @@ object PlaceContrscts {
         const val SHORT_TITLE = "shortTitle"
         const val SITE_URL = "siteUrl"
         const val TIME_TABLE = "timetable"
+        const val CITY = "city"
     }
 }

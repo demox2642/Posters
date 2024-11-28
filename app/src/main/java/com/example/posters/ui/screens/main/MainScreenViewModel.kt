@@ -1,5 +1,6 @@
 package com.example.posters.ui.screens.main
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
@@ -14,6 +15,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -31,7 +33,12 @@ class MainScreenViewModel
         private val _posterList = MutableStateFlow(PresentationModel<PagingData<PosterPresentation>>(screenState = ScreenState.DEFAULT))
         val posterList = _posterList.asStateFlow()
 
+    init {
+        getCategoryList()
+    }
+
         fun getCategoryList() {
+
             viewModelScope.launch(Dispatchers.IO) {
                 getCategoryListUseCase.getCategoryList().collect {
                     _categoryList.value = it
@@ -56,5 +63,21 @@ class MainScreenViewModel
                         _posterList.value = it
                     }
             }
+
+
         }
+
+    fun changeCategoryItemState(id:Long){
+
+        val casheList = _categoryList.value.data?.toMutableList()!!
+
+        casheList.forEach {
+            if (it.id == id){
+                it.select = it.select.not()
+            }
+        }
+        Log.e("Filters","$casheList")
+
+        _categoryList.value =  PresentationModel<List<CategoryPresentation>>(screenState = ScreenState.RESULT, data = casheList.toList())
+    }
     }

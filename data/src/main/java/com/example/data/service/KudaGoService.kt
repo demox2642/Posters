@@ -18,8 +18,8 @@ interface KudaGoService {
         @Query("text_format") textFormat: String = "text",
         @Query("actual_since") startDate: Long,
         @Query("categories") categories: String?,
-        @Query("lon") lon: Long?,
-        @Query("lat") lat: Long?,
+        @Query("lon") lon: Double?,
+        @Query("lat") lat: Double?,
         @Query("radius") radius: Long?,
     ): ServerResponse
 

@@ -23,5 +23,5 @@ class DomainModule {
     ): GetPosterListUseCase = GetPosterListUseCase(localRepository, internetRepository)
 
     @Provides
-    fun providesGetCategoryListUseCase(localRepository: LocalRepository): GetCategoryListUseCase = GetCategoryListUseCase(localRepository)
+    fun providesGetCategoryListUseCase(localRepository: LocalRepository,internetRepository: InternetRepository,): GetCategoryListUseCase = GetCategoryListUseCase(localRepository, internetRepository)
 }

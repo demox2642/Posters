@@ -19,5 +19,5 @@ interface PlaceDAO {
     fun deletePlace()
 
     @Query("SELECT * FROM ${PlaceContrscts.TABLE_NAME} WHERE ${PlaceContrscts.Colums.ID} =:placeID")
-    fun getPlace(placeID: Long): List<PlaceDB>
+    fun getPlace(placeID: Long): PlaceDB
 }

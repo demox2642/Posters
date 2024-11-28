@@ -9,7 +9,7 @@ data class Place(
     val categories: List<String>,
     val coords: Coords,
     val description: String,
-    val id: Int,
+    val id: Long,
     val images: List<Image>,
     val location: String,
     val phone: String,

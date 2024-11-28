@@ -10,14 +10,20 @@ import com.example.data.database.models.CategoriesDB
 @Dao
 interface CategoriesDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun addAllCategorie(newInetList: List<CategoriesDB>)
+    fun addAllCategorie(categoryList: List<CategoriesDB>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun addCategorie(newInet: CategoriesDB)
+    fun addCategorie(category: CategoriesDB)
 
     @Query("DELETE FROM ${CategorieContrscts.TABLE_NAME}")
     fun deleteCategorie()
 
-    @Query("SELECT * FROM ${CategorieContrscts.TABLE_NAME} WHERE ${CategorieContrscts.Colums.ID} =:posterID")
-    fun getCategorie(posterID: Long): List<CategoriesDB>
+    @Query("SELECT * FROM ${CategorieContrscts.TABLE_NAME} WHERE ${CategorieContrscts.Colums.ID} =:category")
+    fun getCategorie(category: Long): CategoriesDB
+
+    @Query("SELECT * FROM ${CategorieContrscts.TABLE_NAME} WHERE ${CategorieContrscts.Colums.SLUG} =:name")
+    fun getCategorieByName(name: String): CategoriesDB
+
+    @Query("SELECT * FROM ${CategorieContrscts.TABLE_NAME}")
+    fun getCategoryList():List<CategoriesDB>
 }
