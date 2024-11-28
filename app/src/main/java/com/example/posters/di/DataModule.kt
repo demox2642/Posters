@@ -1,5 +1,11 @@
 package com.example.posters.di
 
+import com.example.data.database.LocalDatabaseKudaGo
+import com.example.data.repository.InternetRepositoryImpl
+import com.example.data.repository.LocalRepositoryImpl
+import com.example.data.service.KudaGoService
+import com.example.domain.repository.InternetRepository
+import com.example.domain.repository.LocalRepository
 import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
@@ -48,4 +54,22 @@ class DataModule {
             .baseUrl(baseUrl)
             .addConverterFactory(GsonConverterFactory.create(gson))
     }
+
+    @Singleton
+    @Provides
+    fun provideSearchApi(retrofit: Retrofit.Builder): KudaGoService =
+        retrofit
+            .build()
+            .create(KudaGoService::class.java)
+
+    @Singleton
+    @Provides
+    fun provideLocalRepository(database: LocalDatabaseKudaGo): LocalRepository = LocalRepositoryImpl(database)
+
+    @Singleton
+    @Provides
+    fun provideInternetRepository(
+        service: KudaGoService,
+        database: LocalDatabaseKudaGo,
+    ): InternetRepository = InternetRepositoryImpl(service, database)
 }

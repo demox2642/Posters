@@ -9,10 +9,10 @@ import com.example.data.database.models.CategoriesDB
 
 @Dao
 interface CategoriesDAO {
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun addAllCategorie(newInetList: List<CategoriesDB>)
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun addCategorie(newInet: CategoriesDB)
 
     @Query("DELETE FROM ${CategorieContrscts.TABLE_NAME}")

@@ -16,4 +16,6 @@ data class CategoriesDB(
     val name: String,
     @ColumnInfo(name = CategorieContrscts.Colums.SLUG)
     val slug: String,
+    @ColumnInfo(name = CategorieContrscts.Colums.SELECT)
+    val select: Boolean = false,
 )

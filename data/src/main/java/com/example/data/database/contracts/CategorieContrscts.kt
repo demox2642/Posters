@@ -7,5 +7,6 @@ object CategorieContrscts {
         const val ID = "id"
         const val NAME = "name"
         const val SLUG = "slug"
+        const val SELECT = "select"
     }
 }

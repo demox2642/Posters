@@ -19,9 +19,9 @@ import com.example.data.database.contracts.PosterContrscts
 )
 data class PosterDB(
     @ColumnInfo(name = PosterContrscts.Colums.START_DATA)
-    val startData: Long,
+    val startData: Long?,
     @ColumnInfo(name = PosterContrscts.Colums.END_DATA)
-    val endData: Long,
+    val endData: Long?,
     @ColumnInfo(name = PosterContrscts.Colums.DESCRIPTION)
     val description: String,
     @PrimaryKey(autoGenerate = false)
