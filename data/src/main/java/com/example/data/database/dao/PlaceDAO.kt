@@ -9,10 +9,10 @@ import com.example.data.database.models.PlaceDB
 
 @Dao
 interface PlaceDAO {
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun addAllPlace(newInetList: List<PlaceDB>)
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun addPlace(newPlace: PlaceDB)
 
     @Query("DELETE FROM ${PlaceContrscts.TABLE_NAME}")

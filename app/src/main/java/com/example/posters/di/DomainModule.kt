@@ -2,6 +2,7 @@ package com.example.posters.di
 
 import com.example.domain.repository.InternetRepository
 import com.example.domain.repository.LocalRepository
+import com.example.domain.usecase.ChangeFilterStateUseCase
 import com.example.domain.usecase.GetCategoryListUseCase
 import com.example.domain.usecase.GetPosterDetailUseCase
 import com.example.domain.usecase.GetPosterListUseCase
@@ -24,4 +25,8 @@ class DomainModule {
 
     @Provides
     fun providesGetCategoryListUseCase(localRepository: LocalRepository,internetRepository: InternetRepository,): GetCategoryListUseCase = GetCategoryListUseCase(localRepository, internetRepository)
+
+    @Provides
+    fun providesChangeFilterStateUseCase(localRepository: LocalRepository,): ChangeFilterStateUseCase = ChangeFilterStateUseCase(localRepository)
+
 }

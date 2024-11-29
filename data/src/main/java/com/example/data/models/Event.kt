@@ -6,7 +6,7 @@ data class Event(
     val description: String,
     val id: Long,
     val images: List<Image>,
-    val place: PlaceId,
+    val place: PlaceId?,
     val slug: String,
     val title: String,
     val coords: Coords?,

@@ -3,8 +3,6 @@ package com.example.domain.usecase
 import androidx.paging.PagingData
 import com.example.domain.models.Location
 import com.example.domain.models.PosterPresentation
-import com.example.domain.models.PresentationModel
-import com.example.domain.models.ScreenState
 import com.example.domain.repository.InternetRepository
 import com.example.domain.repository.LocalRepository
 import kotlinx.coroutines.Dispatchers
@@ -21,53 +19,32 @@ class GetPosterListUseCase(
         categories: String?,
         radius: Long?,
         internetIsConnect: Boolean,
-    ): Flow<PresentationModel<PagingData<PosterPresentation>>> =
-        flow {
-            var response = PresentationModel<PagingData<PosterPresentation>>(screenState = ScreenState.LOADING)
+        error: (String) -> Unit,
+    ): Flow<PagingData<PosterPresentation>> {
 
-            if (internetIsConnect)
-                {
-                    val internetResponse =
+     return   if (internetIsConnect){
+
+         println("GetPosterListUseCase start")
                         internetRepository.getPosterList(
                             location = location,
                             categories = categories,
                             radius = radius,
-                        ) {
-                            response =
-                                PresentationModel<PagingData<PosterPresentation>>(
-                                    screenState = ScreenState.RESULT,
-                                    errorText = it,
-                                )
-                        }
-                    internetResponse.collect{
-                        response =
-                            PresentationModel<PagingData<PosterPresentation>>(
-                                screenState = ScreenState.RESULT,
-                                data = it,
-                            )
-                    }
+                            error = error
+                        )
+        }else{
+                  flow {
+                      var result = PagingData.empty<PosterPresentation>()
+                      result = localRepository.getPosterList(
+                          location = location,
+                          categories = categories,
+                          radius = radius,
+                          error = error
+                      )
+                      emit(result)
+                  } .flowOn(Dispatchers.IO)
 
-                } else {
-                val localResponse =
-                    localRepository.getPosterList(
-                        location = location,
-                        categories = categories,
-                        radius = radius,
-                    ) {
-                        response =
-                            PresentationModel<PagingData<PosterPresentation>>(
-                                screenState = ScreenState.RESULT,
-                                errorText = it,
-                            )
-                    }
+        }
 
-                response =
-                    PresentationModel<PagingData<PosterPresentation>>(
-                        screenState = ScreenState.RESULT,
-                        data = localResponse,
-                    )
-            }
+    }
 
-            emit(response)
-        }.flowOn(Dispatchers.IO)
 }

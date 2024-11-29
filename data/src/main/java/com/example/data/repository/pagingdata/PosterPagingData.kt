@@ -1,17 +1,18 @@
 package com.example.data.repository.pagingdata
 
+import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.example.data.database.LocalDatabaseKudaGo
 import com.example.data.database.models.PosterCategoryDB
 import com.example.data.models.Event
 import com.example.data.models.toPlaceDB
+import com.example.data.models.toPosterDB
 import com.example.data.models.toPosterPresentation
 import com.example.data.service.KudaGoService
 import com.example.domain.models.Location
 import com.example.domain.models.PosterPresentation
 import java.time.LocalDateTime
-import java.util.Calendar
 
 class PosterPagingData(
     private val service: KudaGoService,
@@ -19,7 +20,6 @@ class PosterPagingData(
     private val location: Location?,
     private val categories: String?,
     private val radius: Long?,
-    private val error: (String) -> Unit,
 ) : PagingSource<Int, PosterPresentation>() {
     override fun getRefreshKey(state: PagingState<Int, PosterPresentation>): Int? {
         val anchorPosition = state.anchorPosition ?: return null
@@ -28,46 +28,71 @@ class PosterPagingData(
     }
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, PosterPresentation> {
-        val page: Int = params.key ?: 1
-
-        val  data = LocalDateTime.now().minusMonths(1)
-        val calendar = Calendar.getInstance()
-        calendar.set(
-             data.year,
-             data.monthValue,
-             data.dayOfMonth
-        )
+        val page = params.key ?: 1
+        return try {
+            val  data = LocalDateTime.now().minusMonths(1)
             val posters = mutableListOf<PosterPresentation>()
-
-            val events =
-                service.getEvents(
+            val events = service.getEvents(
                     page = page,
-                    startDate = calendar.timeInMillis,
+                    startDate = "${data.year}-${ data.monthValue}-${data.dayOfMonth} 00:00:00.000",
                     lon = location?.lon,
                     lat = location?.lat,
                     radius = radius,
                     categories = categories
+            )
 
-                )
+            if (events.results.isNullOrEmpty().not()){
+                val places =  events.results?.filter { it.place != null }?.map { poster ->
+                    service.getPlace(poster.place?.id.toString())
+                }
+                // Load Place to DB
+                if (places.isNullOrEmpty().not()){
+                    databaseKudaGo.placeDao().addAllPlace(places!!.map { it.toPlaceDB()})
+                }
 
-       return if (events.error.isNullOrEmpty()) {
+                val postersDB =  events.results?.filter { it.place != null }?.map { it.toPosterDB() }
+                postersDB?.let {
+                    databaseKudaGo.posterDao().addAllPoster(postersDB)
+                }
 
-            val places =  events.results?.map { poster->
-                service.getPlace(poster.place.id.toString())
-            }
-            if (places.isNullOrEmpty().not()){
-                databaseKudaGo.placeDao().addAllPlace(places!!.map { it.toPlaceDB() })
-
-                events.results.map { event: Event ->
-                    val categoryList = mutableListOf<String>()
-                    event.categories.forEach { categoty->
+                //Load Categories
+                events.results!!.filter { it.place != null }.forEach { event: Event ->
+                    //Load Poster
+                    databaseKudaGo.posterDao().addPoster(event.toPosterDB())
+                    Log.e("PosterS","${event}")
+                    event.categories.forEach { categoty ->
                         val categoryItem = databaseKudaGo.categoryDao().getCategorieByName(name = categoty)
-                        categoryList.add(categoryItem.name)
-                        databaseKudaGo.posterCategoryDao().addPosterCategory(PosterCategoryDB(posterId = event.id, categoryId =categoryItem.id ))
+                        val posterCategoryList = databaseKudaGo.posterCategoryDao().getPosterCategory(event.id)
+                        categoryItem.let {
+                            if (posterCategoryList.contains(PosterCategoryDB(posterId = event.id, categoryId =categoryItem.id )).not()) {
+                             databaseKudaGo.posterCategoryDao().addPosterCategory(
+                                    PosterCategoryDB(
+
+                                        posterId = event.id,
+                                        categoryId = categoryItem.id
+                                    )
+                                )
+                            }
+                        }
                     }
-                    posters.add(event.toPosterPresentation(categoryList))
+
                 }
             }
+
+
+            val dataBasePosters = databaseKudaGo.posterDao().getPosterList()
+            Log.e("PosterList","${dataBasePosters}")
+            databaseKudaGo.posterDao().getPosterList().forEach { poster->
+               posters.add(poster.toPosterPresentation(
+                   categories = databaseKudaGo.posterCategoryDao().getPosterCategory(poster.id).map { category->
+                       databaseKudaGo.categoryDao().getCategorie(category.categoryId).name
+                   },
+                   placeDB = databaseKudaGo.placeDao().getPlace(poster.placeId)
+               )
+
+               )
+               Log.e("PosterList","${posters}")
+           }
 
             val nextKey =
                 if (events.next.isNullOrEmpty()) null else page + 1
@@ -75,9 +100,12 @@ class PosterPagingData(
             val prevKey = if (events.previous.isNullOrEmpty()) null else page - 1
 
            LoadResult.Page(posters, prevKey, nextKey)
-        }else{
-            error(events.error)
-           LoadResult.Error(Throwable("No Internet, no cache"))
+
+    }catch (e: Exception){
+        Log.e("PagingError","$e")
+            LoadResult.Error(Throwable(e.message))
+
         }
     }
+
 }

@@ -3,14 +3,11 @@ package com.example.data.repository
 import androidx.paging.PagingData
 import com.example.data.database.LocalDatabaseKudaGo
 import com.example.data.models.toPlacePresentation
-import com.example.data.models.toPosterPresentation
 import com.example.domain.models.CategoryPresentation
 import com.example.domain.models.Location
-import com.example.domain.models.PlacePresentation
 import com.example.domain.models.PosterDetailPresentation
 import com.example.domain.models.PosterPresentation
 import com.example.domain.repository.LocalRepository
-import kotlinx.coroutines.delay
 import javax.inject.Inject
 
 class LocalRepositoryImpl
@@ -46,4 +43,10 @@ class LocalRepositoryImpl
                CategoryPresentation(id = it.id, name = it.name, slug = it.slug, select = it.select)
            }
         }
+
+    override suspend fun updateCategoryList(categoryId: Long): List<CategoryPresentation> {
+        val category = database.categoryDao().getCategorie(categoryId).copy()
+        database.categoryDao().addCategorie(category.copy(select = category.select.not()))
+        return getCategoryList()
     }
+}

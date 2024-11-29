@@ -22,5 +22,7 @@ object DatabaseModule {
                 context,
                 LocalDatabaseKudaGo::class.java,
                 "local_data_base_kuga_go",
-            ).build()
+            )
+            .allowMainThreadQueries()
+            .build()
 }

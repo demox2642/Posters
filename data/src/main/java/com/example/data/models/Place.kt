@@ -10,7 +10,7 @@ data class Place(
     val coords: Coords,
     val description: String,
     val id: Long,
-    val images: List<Image>,
+    val images: List<Image>?,
     val location: String,
     val phone: String,
     @SerializedName("short_title")

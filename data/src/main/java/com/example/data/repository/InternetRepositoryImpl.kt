@@ -40,14 +40,14 @@ class InternetRepositoryImpl
                         location = location,
                         categories = categories,
                         radius = radius,
-                        error = error,
                     )
                 },
             ).flow
 
     override suspend fun getCategoryes(): List<CategoryPresentation> {
         val response = service.getCategoryList()
-        database.categoryDao().addAllCategorie(response.map { CategoriesDB(
+        database.categoryDao().addAllCategorie(response.map {
+            CategoriesDB(
             id = it.id,
             name = it.name,
             slug = it.slug,

@@ -1,11 +1,11 @@
 package com.example.data.models
 
+import android.util.Log
 import com.example.data.database.models.PlaceDB
 import com.example.data.database.models.PosterDB
 import com.example.domain.models.Location
 import com.example.domain.models.PlacePresentation
 import com.example.domain.models.PosterPresentation
-import java.text.SimpleDateFormat
 import java.util.Date
 
 fun Place.toPlaceDB()=PlaceDB(
@@ -15,7 +15,7 @@ fun Place.toPlaceDB()=PlaceDB(
     description = this.description,
     lon = this.coords.lon,
     lat = this.coords.lat,
-    image = this.images.firstOrNull()?.image,
+    image = this.images?.firstOrNull()?.image,
     phone = this.phone,
     siteUrl = this.siteUrl,
     shortTitle = this.shortTitle,
@@ -39,16 +39,19 @@ fun PlaceDB.toPlacePresentation() = PlacePresentation(
     location = Location(lat = this.lat, lon = this.lon)
 )
 
- fun Event.toPosterDB()=PosterDB(
+ fun Event.toPosterDB(): PosterDB{
+     Log.e("Event.toPosterDB()","$this")
+
+    return PosterDB(
     id = this.id,
     startData = this.dates.firstOrNull()?.start,
     endData = this.dates.firstOrNull()?.end,
     description = this.description,
     title = this.title,
     images = this.images.firstOrNull()?.image,
-    placeId = this.place.id,
+    placeId = this.place!!.id,
     slug = this.slug
-)
+)}
 
 fun PosterDB.toPosterPresentation(categories: List<String>, placeDB: PlaceDB) = PosterPresentation(
      id = this.id,
@@ -60,7 +63,9 @@ fun PosterDB.toPosterPresentation(categories: List<String>, placeDB: PlaceDB) = 
  description = this.description,
 )
 
-fun Event.toPosterPresentation(categories: List<String>) = PosterPresentation(
+fun Event.toPosterPresentation(categories: List<String>):PosterPresentation{
+   return try {
+        PosterPresentation(
     id = this.id,
     location = Location(lon = this.coords?.lon, lat = this.coords?.lat),
     categories = categories,
@@ -69,5 +74,27 @@ fun Event.toPosterPresentation(categories: List<String>) = PosterPresentation(
     title = this.title,
     description = this.description,
 )
+    }catch (e:Exception){
+        Log.e("toPosterPresentation","Map $this \n Error:${e.message}")
+       PosterPresentation(
+           id = 1,
+           location = null,
+           categories = emptyList(),
+           startData =null,
+           endData= null,
+           title = "this.title",
+           description = "this.description",
+       )
+    }
+}
+//= PosterPresentation(
+//    id = this.id,
+//    location = Location(lon = this.coords?.lon, lat = this.coords?.lat),
+//    categories = categories,
+//    startData = this.dates.firstOrNull()?.let { Date(it.start) },
+//    endData= this.dates.firstOrNull()?.let { Date(it.end) },
+//    title = this.title,
+//    description = this.description,
+//)
 
 

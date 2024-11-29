@@ -17,4 +17,6 @@ interface LocalRepository {
     suspend fun getPosterDetail(id: Long): PosterDetailPresentation?
 
     suspend fun getCategoryList(): List<CategoryPresentation>
+
+    suspend fun updateCategoryList(categoryId: Long): List<CategoryPresentation>
 }

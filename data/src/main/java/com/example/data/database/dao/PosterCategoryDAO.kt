@@ -12,7 +12,8 @@ interface PosterCategoryDAO {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun addAllPosterCategory(newInetList: List<PosterCategoryDB>)
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+
+@Insert(onConflict = OnConflictStrategy.IGNORE)
     fun addPosterCategory(newPosterCategory: PosterCategoryDB)
 
     @Query("DELETE FROM ${PosterCategoryContrscts.TABLE_NAME}")

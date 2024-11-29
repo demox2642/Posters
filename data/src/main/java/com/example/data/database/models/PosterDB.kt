@@ -32,7 +32,7 @@ data class PosterDB(
     @ColumnInfo(name = PosterContrscts.Colums.PLACE_ID)
     val placeId: Long,
     @ColumnInfo(name = PosterContrscts.Colums.SLUG)
-    val slug: String,
+    val slug: String?,
     @ColumnInfo(name = PosterContrscts.Colums.TITLE)
     val title: String,
 )

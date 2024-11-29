@@ -4,7 +4,7 @@ import java.util.Date
 
 data class PosterPresentation(
     val id: Long,
-    val location: Location,
+    val location: Location?,
     val categories: List<String>,
     val startData: Date?,
     val endData: Date?,

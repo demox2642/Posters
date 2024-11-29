@@ -14,9 +14,9 @@ data class PlaceDB(
     @ColumnInfo(name = PlaceContrscts.Colums.BODY_TEXT)
     val bodyText: String?,
     @ColumnInfo(name = PlaceContrscts.Colums.LAT)
-    val lat: Double,
+    val lat: Double?,
     @ColumnInfo(name = PlaceContrscts.Colums.LON)
-    val lon: Double,
+    val lon: Double?,
     @ColumnInfo(name = PlaceContrscts.Colums.DESC)
     val description: String?,
     @PrimaryKey(autoGenerate = false)

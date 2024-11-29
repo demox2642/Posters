@@ -14,13 +14,15 @@ interface KudaGoService {
     @GET("events/")
     suspend fun getEvents(
         @Query("page") page: Int,
+        @Query("page_size") pageSize: Int? = 10,
         @Query("fields") fields: String = "id,place,description,slug,title,description,dates,images,categories",
         @Query("text_format") textFormat: String = "text",
-        @Query("actual_since") startDate: Long,
+        @Query("actual_since") startDate: String,
         @Query("categories") categories: String?,
         @Query("lon") lon: Double?,
         @Query("lat") lat: Double?,
         @Query("radius") radius: Long?,
+
     ): ServerResponse
 
     @GET("places/{id}/?text_format=text")
