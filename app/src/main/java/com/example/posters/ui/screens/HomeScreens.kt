@@ -1,5 +1,6 @@
 package com.example.posters.ui.screens
 
+import androidx.compose.runtime.remember
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -19,14 +20,16 @@ sealed class HomeScreens(
 fun NavGraphBuilder.homeScreens(navController: NavHostController) {
     composable(HomeScreens.HomeMainScreen.route) { MainScreen(navController) }
     composable(
-        HomeScreens.DetailPoster.route + "/{posterId}",
-        arguments =
-            listOf(
-                navArgument(name = "posterId") { NavType.LongType },
-            ),
+        HomeScreens.DetailPoster.route.plus("/{poster_id}"),
+        arguments = listOf(
+            navArgument("poster_id") {
+                type = NavType.LongType
+            },
+        ),
     ) { backStackEntry ->
-
-        val posterId = (backStackEntry.arguments?.getLong("posterId") ?: return@composable)
-        DetailPoster(navController, posterId)
+        val arguments = remember(backStackEntry) {
+            (backStackEntry.arguments?.getLong("poster_id"))
+        }
+        DetailPoster(navController, arguments!!)
     }
 }

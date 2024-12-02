@@ -94,9 +94,10 @@ dependencies {
 
     implementation(libs.compose)
     implementation(libs.androidx.core.splashscreen)
-    implementation("com.google.android.gms:play-services-maps:19.0.0")
+    implementation(libs.play.services.maps)
     implementation(libs.play.services.location)
 
     implementation(libs.androidx.paging.compose)
     implementation(libs.androidx.paging.runtime)
+    implementation(libs.accompanist.permissions)
 }

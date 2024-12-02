@@ -1,6 +1,6 @@
 package com.example.domain.models
 
 data class Location(
-    val lat: Double?,
+    var lat: Double?,
     val lon: Double?,
 )

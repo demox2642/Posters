@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Posters</string>
+    <string name="permission_error_title">Ошибка доступа!</string>
+    <string name="permission_error_text">Не получены разрешения геопозиции. Для более точного поиска используется геопозиция телефона. \n Предоставить права?</string>
 </resources>

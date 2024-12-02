@@ -13,6 +13,8 @@ import com.example.data.service.KudaGoService
 import com.example.domain.models.Location
 import com.example.domain.models.PosterPresentation
 import java.time.LocalDateTime
+import java.time.ZoneId
+
 
 class PosterPagingData(
     private val service: KudaGoService,
@@ -32,9 +34,11 @@ class PosterPagingData(
         return try {
             val  data = LocalDateTime.now().minusMonths(1)
             val posters = mutableListOf<PosterPresentation>()
+
+            val epoch: Long = data.atZone(ZoneId.systemDefault()).toEpochSecond()
             val events = service.getEvents(
                     page = page,
-                    startDate = "${data.year}-${ data.monthValue}-${data.dayOfMonth} 00:00:00.000",
+                    startDate = "$epoch",
                     lon = location?.lon,
                     lat = location?.lat,
                     radius = radius,
@@ -59,7 +63,7 @@ class PosterPagingData(
                 events.results!!.filter { it.place != null }.forEach { event: Event ->
                     //Load Poster
                     databaseKudaGo.posterDao().addPoster(event.toPosterDB())
-                    Log.e("PosterS","${event}")
+
                     event.categories.forEach { categoty ->
                         val categoryItem = databaseKudaGo.categoryDao().getCategorieByName(name = categoty)
                         val posterCategoryList = databaseKudaGo.posterCategoryDao().getPosterCategory(event.id)
@@ -79,9 +83,6 @@ class PosterPagingData(
                 }
             }
 
-
-            val dataBasePosters = databaseKudaGo.posterDao().getPosterList()
-            Log.e("PosterList","${dataBasePosters}")
             databaseKudaGo.posterDao().getPosterList().forEach { poster->
                posters.add(poster.toPosterPresentation(
                    categories = databaseKudaGo.posterCategoryDao().getPosterCategory(poster.id).map { category->
@@ -91,7 +92,6 @@ class PosterPagingData(
                )
 
                )
-               Log.e("PosterList","${posters}")
            }
 
             val nextKey =

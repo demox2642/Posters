@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import com.example.domain.models.CategoryPresentation
+import com.example.domain.models.Location
 import com.example.domain.models.PosterPresentation
 import com.example.domain.models.PresentationModel
 import com.example.domain.models.ScreenState
@@ -33,8 +34,18 @@ class MainScreenViewModel
         private val _posterList = MutableStateFlow(PagingData.empty<PosterPresentation>())
         val posterList = _posterList.asStateFlow()
 
+    private val _dialogState = MutableStateFlow(true)
+    val dialogState = _dialogState.asStateFlow()
+    private val _location = MutableStateFlow<Location?>(null)
+    val location = _location.asStateFlow()
+
+
     init {
         getCategoryList()
+    }
+
+    fun changeDialogState(){
+        _dialogState.value = false
     }
 
         fun getCategoryList() {
@@ -54,7 +65,7 @@ class MainScreenViewModel
             viewModelScope.launch(Dispatchers.IO) {
                 getPosterListUseCase
                     .getPosterList(
-                        location = null,
+                        location = _location.value,
                         categories =
                             _categoryList.value.data?.filter { it.select }
                                 ?.map { it.slug }
@@ -62,7 +73,7 @@ class MainScreenViewModel
                                 .replace("[", "")
                                 .replace("]", "")
                                 .replace(" ",""),
-                        radius = null,
+                        radius = if (_location.value == null) null else 20000,
                         internetIsConnect = connectionManager.isConnected(),
                         error = {
 
@@ -83,4 +94,9 @@ viewModelScope.launch(Dispatchers.IO)  {
     }
 }
     }
+
+    fun saveLocation(location: Location) {
+        _location.value = location
+        getCategoryList()
     }
+}

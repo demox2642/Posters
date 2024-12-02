@@ -23,8 +23,6 @@ class GetPosterListUseCase(
     ): Flow<PagingData<PosterPresentation>> {
 
      return   if (internetIsConnect){
-
-         println("GetPosterListUseCase start")
                         internetRepository.getPosterList(
                             location = location,
                             categories = categories,
